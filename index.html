@@ -441,6 +441,8 @@
   input:focus, textarea:focus, select:focus{ outline:none; border-color:var(--purple); box-shadow:0 0 0 3px rgba(75,45,143,.12); }
   textarea{ min-height:120px; resize:vertical; }
   .form-submit{ width:100%; }
+  #form-status{ opacity:1; transition:opacity .6s ease; }
+  #form-status.fade-out{ opacity:0; }
   .contact-list a{ color:var(--purple); }
   .contact-list a:hover{ text-decoration:underline; }
 
@@ -774,13 +776,21 @@
   // Contact form submission (Formspree, AJAX so the page doesn't redirect)
   const form = document.getElementById('contact-form');
   const status = document.getElementById('form-status');
+  let fadeTimer = null;
+
+  function showStatus(message, color) {
+    clearTimeout(fadeTimer);
+    status.classList.remove('fade-out');
+    status.style.display = 'block';
+    status.style.color = color;
+    status.textContent = message;
+  }
+
   if (form) {
     form.addEventListener('submit', function(e){
       e.preventDefault();
       const data = new FormData(form);
-      status.style.display = 'block';
-      status.style.color = 'var(--ink-soft)';
-      status.textContent = 'Sending…';
+      showStatus('Sending…', 'var(--ink-soft)');
 
       fetch(form.action, {
         method: 'POST',
@@ -788,22 +798,24 @@
         headers: { 'Accept': 'application/json' }
       }).then(response => {
         if (response.ok) {
-          status.style.color = 'var(--green)';
-          status.textContent = "Thank you! Your message has been sent. We'll be in touch soon.";
+          showStatus("Thank you! Your message has been sent. We'll be in touch soon.", 'var(--green)');
           form.reset();
+          // Auto-fade the success message after 5 seconds
+          fadeTimer = setTimeout(() => {
+            status.classList.add('fade-out');
+            setTimeout(() => { status.style.display = 'none'; }, 600);
+          }, 5000);
         } else {
           response.json().then(data => {
-            status.style.color = '#C0392B';
             if (data.errors) {
-              status.textContent = data.errors.map(err => err.message).join(', ');
+              showStatus(data.errors.map(err => err.message).join(', '), '#C0392B');
             } else {
-              status.textContent = 'Oops! There was a problem sending your message. Please try again or email us directly.';
+              showStatus('Oops! There was a problem sending your message. Please try again or email us directly.', '#C0392B');
             }
           });
         }
       }).catch(() => {
-        status.style.color = '#C0392B';
-        status.textContent = 'Oops! There was a problem sending your message. Please try again or email us directly.';
+        showStatus('Oops! There was a problem sending your message. Please try again or email us directly.', '#C0392B');
       });
     });
   }
