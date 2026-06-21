@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://speedyhypnosis.github.io/agapelovenow/sitemap.xml
+Sitemap: https://agapelovenow.org/sitemap.xml
