@@ -481,6 +481,15 @@
 
   .reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
   .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* Daily Bible Verse Widget */
+  .bible-verse-widget{ background:linear-gradient(135deg,#4B2D8F,#E0247A); padding:40px 0; text-align:center; }
+  .verse-inner{ max-width:760px; margin:0 auto; padding:0 20px; }
+  .verse-label{ display:block; font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:rgba(255,255,255,.75); margin-bottom:16px; }
+  .verse-text{ font-family:'Playfair Display',serif; font-size:22px; line-height:1.6; color:#fff; margin-bottom:12px; font-style:italic; }
+  @media(max-width:600px){ .verse-text{ font-size:18px; } }
+  .verse-ref{ font-family:'Poppins',sans-serif; font-size:14px; color:rgba(255,255,255,.8); font-weight:600; }
+
 </style>
 </head>
 <body>
@@ -523,6 +532,43 @@
     </div>
   </div>
 </header>
+
+<!-- Daily Bible Verse Widget -->
+<section class="bible-verse-widget">
+  <div class="container">
+    <div class="verse-inner">
+      <span class="verse-label">&#128214; Daily Bible Verse</span>
+      <p class="verse-text" id="verseText">Loading today's verse...</p>
+      <p class="verse-ref" id="verseRef"></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function(){
+    var verses = [
+      "John 3:16","Psalm 23:1","Romans 8:28","Philippians 4:13","Isaiah 40:31",
+      "Jeremiah 29:11","Proverbs 3:5","Matthew 11:28","Psalm 46:1","Romans 12:2",
+      "Galatians 5:22","1 Corinthians 13:4","Psalm 119:105","Joshua 1:9","Isaiah 41:10",
+      "Romans 5:8","Ephesians 2:8","2 Timothy 1:7","Psalm 34:18","Matthew 6:33",
+      "Hebrews 11:1","James 1:2","1 Peter 5:7","Lamentations 3:22","Philippians 4:6",
+      "Colossians 3:23","Romans 15:13","Psalm 27:1","Isaiah 43:2","John 14:6"
+    ];
+    var today = new Date();
+    var dayOfYear = Math.floor((today - new Date(today.getFullYear(),0,0)) / 86400000);
+    var verse = verses[dayOfYear % verses.length];
+    fetch("https://bible-api.com/" + encodeURIComponent(verse) + "?translation=kjv")
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        document.getElementById("verseText").textContent = "“" + data.text.trim() + "”";
+        document.getElementById("verseRef").textContent = "— " + data.reference + " (KJV)";
+      })
+      .catch(function(){
+        document.getElementById("verseText").textContent = "“For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.”";
+        document.getElementById("verseRef").textContent = "— John 3:16 (KJV)";
+      });
+  })();
+</script>
 
 <section class="mission" id="mission">
   <div class="container reveal">
