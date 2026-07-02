@@ -486,6 +486,16 @@
   .reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
   .reveal.in{ opacity:1; transform:translateY(0); }
 
+  /* People Served Counter */
+  .counter-section{ background:#1a0a3c; padding:48px 0; text-align:center; }
+  .counter-inner{ max-width:760px; margin:0 auto; padding:0 20px; }
+  .counter-eyebrow{ display:block; font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.12em; color:#F28C28; margin-bottom:12px; }
+  .counter-number{ font-family:'Playfair Display',serif; font-size:64px; font-weight:700; color:#ffffff; line-height:1; margin-bottom:8px; }
+  @media(max-width:600px){ .counter-number{ font-size:48px; } }
+  .counter-label{ font-family:'Poppins',sans-serif; font-size:16px; color:rgba(255,255,255,.75); letter-spacing:.04em; }
+  .counter-sub{ font-family:'Poppins',sans-serif; font-size:12px; color:rgba(255,255,255,.45); margin-top:16px; font-style:italic; }
+
+
   /* Daily Bible Verse Widget */
   .bible-verse-widget{ background:linear-gradient(135deg,#4B2D8F,#E0247A); padding:40px 0; text-align:center; }
   .verse-inner{ max-width:760px; margin:0 auto; padding:0 20px; }
@@ -570,6 +580,39 @@
       .catch(function(){
         document.getElementById("verseText").textContent = "“For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.”";
         document.getElementById("verseRef").textContent = "— John 3:16 (KJV)";
+      });
+  })();
+</script>
+
+<!-- People Served Counter -->
+<section class="counter-section">
+  <div class="container">
+    <div class="counter-inner">
+      <span class="counter-eyebrow">Community Impact</span>
+      <div class="counter-number" id="peopleCount">...</div>
+      <div class="counter-label">Neighbors Served and Counting</div>
+      <div class="counter-sub">Tracking neighbors served since January 2026 — updated every Monday</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function(){
+    var sheetId = '1wtuDIPPYq0nUTI0E5WP1kl1K46C9AYRsRSsKQJfBZW4';
+    var url = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/export?format=csv&range=B2:B500';
+    fetch(url)
+      .then(function(r){ return r.text(); })
+      .then(function(text){
+        var lines = text.trim().split('\n');
+        var total = 0;
+        lines.forEach(function(line){
+          var val = parseFloat(line.trim().replace(/[^0-9.]/g,''));
+          if(!isNaN(val)) total += val;
+        });
+        document.getElementById('peopleCount').textContent = total > 0 ? total.toLocaleString() : '0';
+      })
+      .catch(function(){
+        document.getElementById('peopleCount').textContent = '0';
       });
   })();
 </script>
