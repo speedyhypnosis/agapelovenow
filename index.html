@@ -244,9 +244,38 @@
   .nav-link{ font-size:15px; font-weight:500; padding:8px 14px; border-radius:8px; color:var(--ink-soft); transition:background .15s, color .15s;}
   .nav-link:hover{ background:#fff; color:var(--purple); }
   .nav-cta{ margin-left:8px; }
+  .nav-hamburger{ display:none; }
   @media (max-width:780px){
     .nav-inner{ padding:14px 20px; }
     .nav-links a:not(.nav-cta-link){ display:none; }
+    .nav-hamburger{
+      display:flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border:none; background:transparent;
+      cursor:pointer; margin-right:4px; order:-1;
+    }
+    .nav-hamburger span{
+      display:block; width:22px; height:2px; background:var(--ink);
+      position:relative; transition:background .2s ease;
+    }
+    .nav-hamburger span::before, .nav-hamburger span::after{
+      content:''; position:absolute; left:0; width:22px; height:2px;
+      background:var(--ink); transition:transform .2s ease;
+    }
+    .nav-hamburger span::before{ top:-7px; }
+    .nav-hamburger span::after{ top:7px; }
+    .nav-hamburger.open span{ background:transparent; }
+    .nav-hamburger.open span::before{ top:0; transform:rotate(45deg); }
+    .nav-hamburger.open span::after{ top:0; transform:rotate(-45deg); }
+    .nav-mobile-menu{
+      display:none; flex-direction:column; gap:2px;
+      background:var(--cream); padding:8px 20px 16px; border-top:1px solid rgba(75,45,143,.1);
+    }
+    .nav-mobile-menu.open{ display:flex; }
+    .nav-mobile-menu a{
+      padding:12px 8px; font-size:16px; font-weight:500; color:var(--ink-soft);
+      border-radius:8px; text-decoration:none;
+    }
+    .nav-mobile-menu a:hover, .nav-mobile-menu a:active{ background:#fff; color:var(--purple); }
   }
 
   /* ---------- HERO ---------- */
@@ -510,6 +539,7 @@
 
 <nav class="nav">
   <div class="nav-inner">
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle navigation menu" aria-expanded="false"><span></span></button>
     <a href="#top" class="nav-mark"><span class="cross">✝</span>Agape Love of Renton</a>
     <div class="nav-links">
       <a class="nav-link" href="#breakfast">The Breakfast</a>
@@ -519,6 +549,13 @@
       <a class="nav-link" href="#contact">Contact</a>
       <a class="btn btn-primary nav-cta nav-cta-link" href="https://gofundme.com/f/agapeloveofrenton" style="padding:10px 22px; font-size:14.5px;">Donate</a>
     </div>
+  </div>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="#breakfast">The Breakfast</a>
+    <a href="#about">About Jeanine</a>
+    <a href="#involved">Get Involved</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#contact">Contact</a>
   </div>
 </nav>
 
@@ -921,6 +958,24 @@
     });
   }, { threshold:0.12 });
   revealEls.forEach(el=>io.observe(el));
+
+  // Mobile hamburger menu
+  const hamburger = document.getElementById('navHamburger');
+  const mobileMenu = document.getElementById('navMobileMenu');
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', function(){
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    mobileMenu.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', function(){
+        mobileMenu.classList.remove('open');
+        hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
 
   // Contact form submission (Formspree, AJAX so the page doesn't redirect)
   const form = document.getElementById('contact-form');
