@@ -893,10 +893,10 @@
       <p style="color:var(--ink-soft); max-width:52ch; margin:8px auto 0;">Whether you want to volunteer, ask a question, or learn more about Agape Love of Renton, we would love to hear from you.</p>
     </div>
 
-    <form id="contact-form" class="reveal" action="https://api.staticforms.dev/submit" method="POST" style="max-width:640px; margin:0 auto;">
-      <input type="hidden" name="apiKey" value="sf_5d88013864824ef3f892993a">
+    <form id="contact-form" class="reveal" action="https://splitforms.com/api/submit" method="POST" style="max-width:640px; margin:0 auto;">
+      <input type="hidden" name="access_key" value="eb82c9caf90d4ca9b0bd526e8c4b71fe">
       <input type="hidden" name="subject" value="New Message — Agape Love of Renton Contact Form">
-      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+      <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
       <div class="field">
         <label for="name">First Name</label>
         <input id="name" name="name" type="text" placeholder="First Name" required>
@@ -977,7 +977,7 @@
     });
   }
 
-  // Contact form submission (Formspree, AJAX so the page doesn't redirect)
+  // Contact form submission (splitforms, AJAX so the page doesn't redirect)
   const form = document.getElementById('contact-form');
   const status = document.getElementById('form-status');
   let fadeTimer = null;
@@ -996,7 +996,7 @@
       const data = new FormData(form);
       showStatus('Sending…', 'var(--ink-soft)');
 
-      fetch('https://api.staticforms.dev/submit', {
+      fetch('https://splitforms.com/api/submit', {
         method: 'POST',
         body: data
       }).then(response => {
